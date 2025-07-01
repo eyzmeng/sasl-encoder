@@ -31,13 +31,13 @@ public class PlainSaslSmtpAuthExample {
      * encoding that converts badly to UTF-8.  (See the constructor below) */
 
     /**
-     * SMTP username.  Corresponds to RFC 4422 authcid.
+     * SMTP username.  Corresponds to RFC 4616 authcid.
      * Set to null to read from standard input.
      */
     private static final String USERNAME = "emeng@cs.wisc.edu";
 
     /**
-     * SMTP password.
+     * SMTP password.  Corresponds to RFC 4616 passwd.
      * Set to null to read from standard input.
      */
     private static final String PASSWORD = "awwwtysm";
