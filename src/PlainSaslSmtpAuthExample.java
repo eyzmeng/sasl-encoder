@@ -24,6 +24,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
+/**
+ * @version 1.0
+ */
 public class PlainSaslSmtpAuthExample {
 
     /* These constants are provided in case your IDE does not hook the JVM
