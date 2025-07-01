@@ -30,22 +30,22 @@ public class PlainSaslSmtpAuthExample {
      * to a console suitable for I/O, or if your machine uses some weird
      * encoding that converts badly to UTF-8.  (See the constructor below) */
 
-	/**
+    /**
      * SMTP username.  Corresponds to RFC 4422 authcid.
-	 * Set to null to read from standard input.
-	 */
-	private static final String USERNAME = "emeng@cs.wisc.edu";
+     * Set to null to read from standard input.
+     */
+    private static final String USERNAME = "emeng@cs.wisc.edu";
 
-	/**
+    /**
      * SMTP password.
-	 * Set to null to read from standard input.
-	 */
-	private static final String PASSWORD = "awwwtysm";
+     * Set to null to read from standard input.
+     */
+    private static final String PASSWORD = "awwwtysm";
 
-	private final String myUsername;
-	private final String myPassword;
+    private final String myUsername;
+    private final String myPassword;
 
-	public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {
         PlainSaslSmtpAuthExample example;
         if (args.length == 0) {
             example = new PlainSaslSmtpAuthExample(USERNAME, PASSWORD);
@@ -57,7 +57,7 @@ public class PlainSaslSmtpAuthExample {
             throw new IllegalArgumentException(usage());
         }
         example.run();
-	}
+    }
 
     /**
      * I format the usage string, a conventional error message displayed
@@ -76,7 +76,7 @@ public class PlainSaslSmtpAuthExample {
      * @param password proivded password
      * @throws IOException if JVM console is acting up
      */
-	public PlainSaslSmtpAuthExample(String username, String password) throws IOException {
+    public PlainSaslSmtpAuthExample(String username, String password) throws IOException {
         /*
          * Here is, in fact, a third way to pass the username and password.
          * It would be harder to set up if you're not on a Unix/Linux computer,
@@ -114,32 +114,32 @@ public class PlainSaslSmtpAuthExample {
             password = System.getenv("SASL_PASSWORD");
         }
 
-		if (username != null) {
-			myUsername = username;
-		} else {
-			String input = System.console().readLine("Username: ");
-			if (input == null) {
-				throw new EOFException();
-			}
-			myUsername = input;
-		}
+        if (username != null) {
+            myUsername = username;
+        } else {
+            String input = System.console().readLine("Username: ");
+            if (input == null) {
+                throw new EOFException();
+            }
+            myUsername = input;
+        }
 
-		if (password != null) {
-			myPassword = password;
-		} else {
-			char[] passwordChars = System.console().readPassword("Password: ");
-			if (passwordChars == null) {
-				throw new EOFException();
-			}
-			myPassword = new String(passwordChars);
-		}
-	}
+        if (password != null) {
+            myPassword = password;
+        } else {
+            char[] passwordChars = System.console().readPassword("Password: ");
+            if (passwordChars == null) {
+                throw new EOFException();
+            }
+            myPassword = new String(passwordChars);
+        }
+    }
 
-	public void run() {
+    public void run() {
         String credentials = "\0" + myUsername + "\0" + myPassword;
         byte[] binaryCredentials = credentials.getBytes(StandardCharsets.UTF_8);
         String base64Credentials = Base64.getEncoder().encodeToString(binaryCredentials);
         System.out.println("AUTH PLAIN " + base64Credentials);
-	}
+    }
 
 }
