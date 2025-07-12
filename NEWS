@@ -1,4 +1,10 @@
-plain_sasl_encoder.git
+PlainSaslSmtpAuthExample.java
 
 1.0  01 July 2025
     - Create this thing for memo (XOAUTH2 soon...)
+
+
+XOAuth2SaslSmtpAuthExample.java
+
+1.0  12 July 2025
+    - Created!  Forked off of the SASL PLAIN encoder.
