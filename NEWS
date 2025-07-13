@@ -1,10 +1,18 @@
 PlainSaslSmtpAuthExample.java
 
+1.1  13 July 2025
+    - The case of System.console() == null (Java's ENOTTY)
+      now causes the program to die more elegantly
+
 1.0  01 July 2025
     - Create this thing for memo (XOAUTH2 soon...)
 
 
 XOAuth2SaslSmtpAuthExample.java
+
+1.1  13 July 2025
+    - The case of System.console() == null (Java's ENOTTY)
+      now causes the program to die more elegantly
 
 1.0  12 July 2025
     - Created!  Forked off of the SASL PLAIN encoder.
