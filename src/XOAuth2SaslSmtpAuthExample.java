@@ -5,8 +5,7 @@
  * (Google and Microsoft namely).  I assume you already have an OAuth2 access
  * token with you; this is not an OAuth2 client that will do HTTP stuff for you
  * (I wouldn't know how to write that in Java anyways...).  See:
- *
- * https://developers.google.com/workspace/gmail/imap/xoauth2-protocol#the_sasl_xoauth2_mechanism.
+ * https://developers.google.com/workspace/gmail/imap/xoauth2-protocol#the_sasl_xoauth2_mechanism
  *
  * This file is directly forked from PlainSaslSmtpAuthExample.java.  Its
  * comments are retained below, but just so you know if you've used that file,
@@ -28,15 +27,20 @@
  * taken from or the second argument, or if absent, it will prompt you for it.
  * A third argument is not allowed and will cause the program to die with an
  * IllegalArgumentException.
+ *
+ * Note that a JVM console/terminal *must* be available when omitted values
+ * are present.  You may have to tinker with your IDE to find out how, or
+ * you will have to make sure that values are always supplied some other way.
  */
 
+import java.io.Console;
 import java.io.EOFException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 /**
- * @version 1.0.1
+ * @version 1.1
  */
 public class XOAuth2SaslSmtpAuthExample {
 
@@ -89,11 +93,24 @@ public class XOAuth2SaslSmtpAuthExample {
     }
 
     /**
+     * Get terminal or die.
+     * @return an I/O console, if available
+     * @throws IOException if JVM is not properly attached to a terminal
+     */
+    private static Console getTty() throws IOException {
+        Console tty = System.console();
+        if (tty == null) {
+            throw new IOException("JVM is not attached to a terminal device.");
+        }
+        return tty;
+    }
+
+    /**
      * Some initialization to ensure that we get the stuff
      * we need to perform SASL XOAUTH2 or die with an error.
      * @param username provided username
      * @param password proivded password
-     * @throws IOException if JVM console is acting up
+     * @throws IOException if JVM console is unavailable or acting up
      */
     public XOAuth2SaslSmtpAuthExample(String user, String access) throws IOException {
         /*
@@ -121,7 +138,7 @@ public class XOAuth2SaslSmtpAuthExample {
          *     java XOAuth2SaslSmtpAuthExample
          *
          * In C shell, you'd replace 'export' with 'setenv' and drop the '='
-	 * and use the older backtick capture:
+         * and use the older backtick capture:
          *
          *     setenv OAUTH_USER 'meng69@wisc.edu'
          *     setenv OAUTH_ACCESS `./get_token.py`
@@ -137,7 +154,7 @@ public class XOAuth2SaslSmtpAuthExample {
         if (user != null) {
             myUser = user;
         } else {
-            String input = System.console().readLine("User: ");
+            String input = getTty().readLine("User: ");
             if (input == null) {
                 throw new EOFException();
             }
@@ -147,7 +164,7 @@ public class XOAuth2SaslSmtpAuthExample {
         if (access != null) {
             myToke = access;
         } else {
-            char[] passwordChars = System.console().readPassword("Password: ");
+            char[] passwordChars = getTty().readPassword("Access Token: ");
             if (passwordChars == null) {
                 throw new EOFException();
             }
@@ -160,8 +177,8 @@ public class XOAuth2SaslSmtpAuthExample {
         String credentials = "user=" + myUser + "\u0001auth=Bearer " + myToke + "\u0001\u0001";
         byte[] binaryCredentials = credentials.getBytes(StandardCharsets.UTF_8);
         String base64Credentials = Base64.getEncoder().encodeToString(binaryCredentials);
-	/* This string will be so disgustingly long it wouldn't even be
-	 * worth it for me to label it as XOAUTH2 -- you just know it is. */
+        /* This string will be so disgustingly long it wouldn't even be
+         * worth it for me to label it as XOAUTH2 -- you just know it is. */
         System.out.println(base64Credentials);
     }
 

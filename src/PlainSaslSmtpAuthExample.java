@@ -17,15 +17,20 @@
  * taken from or the second argument, or if absent, it will prompt you for it.
  * A third argument is not allowed and will cause the program to die with an
  * IllegalArgumentException.
+ *
+ * Note that a JVM console/terminal *must* be available when omitted values
+ * are present.  You may have to tinker with your IDE to find out how, or
+ * you will have to make sure that values are always supplied some other way.
  */
 
+import java.io.Console;
 import java.io.EOFException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 /**
- * @version 1.0
+ * @version 1.1
  */
 public class PlainSaslSmtpAuthExample {
 
@@ -73,11 +78,24 @@ public class PlainSaslSmtpAuthExample {
     }
 
     /**
+     * Get terminal or die.
+     * @return an I/O console, if available
+     * @throws IOException if JVM is not properly attached to a terminal
+     */
+    private static Console getTty() throws IOException {
+        Console tty = System.console();
+        if (tty == null) {
+            throw new IOException("JVM is not attached to a terminal device.");
+        }
+        return tty;
+    }
+
+    /**
      * Some initialization to ensure that we get the stuff
      * we need to perform SASL PLAIN or die with an error.
      * @param username provided username
      * @param password proivded password
-     * @throws IOException if JVM console is acting up
+     * @throws IOException if JVM console is unavailable or acting up
      */
     public PlainSaslSmtpAuthExample(String username, String password) throws IOException {
         /*
@@ -120,7 +138,7 @@ public class PlainSaslSmtpAuthExample {
         if (username != null) {
             myUsername = username;
         } else {
-            String input = System.console().readLine("Username: ");
+            String input = getTty().readLine("Username: ");
             if (input == null) {
                 throw new EOFException();
             }
@@ -130,7 +148,7 @@ public class PlainSaslSmtpAuthExample {
         if (password != null) {
             myPassword = password;
         } else {
-            char[] passwordChars = System.console().readPassword("Password: ");
+            char[] passwordChars = getTty().readPassword("Password: ");
             if (passwordChars == null) {
                 throw new EOFException();
             }
