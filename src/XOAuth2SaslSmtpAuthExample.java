@@ -102,7 +102,7 @@ static {
         );
 
     ACCESS_TOKEN.add(
-        getPath("oauth/wisc/imap_smtp_access_token")
+        getPath("oauth/wiscmail/imap_smtp_access_token")
         );
 
     /* my setup :) */

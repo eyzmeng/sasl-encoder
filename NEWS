@@ -14,7 +14,7 @@ XOAuth2SaslSmtpAuthExample.java
     - Java learns to look for an access token file if any of the
       file paths listed in ACCESS_TOKEN is present.  By default,
       it looks for imap_smtp_access_token, and tries the same name
-      in oauth/wisc (consistent with the AUTH XOAUTH2 memo.)
+      in oauth/wiscmail (consistent with the AUTH XOAUTH2 memo.)
 
 1.1  13 July 2025
     - The case of System.console() == null (Java's ENOTTY)
