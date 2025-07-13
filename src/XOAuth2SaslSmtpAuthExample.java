@@ -108,8 +108,8 @@ public class XOAuth2SaslSmtpAuthExample {
     /**
      * Some initialization to ensure that we get the stuff
      * we need to perform SASL XOAUTH2 or die with an error.
-     * @param username provided username
-     * @param password proivded password
+     * @param user provided username
+     * @param access proivded password
      * @throws IOException if JVM console is unavailable or acting up
      */
     public XOAuth2SaslSmtpAuthExample(String user, String access) throws IOException {
