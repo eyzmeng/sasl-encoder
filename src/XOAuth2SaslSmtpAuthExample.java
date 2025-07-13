@@ -4,7 +4,9 @@
  * Java implementation of the SASL XOAUTH2 mechanism.  Used by the big guys
  * (Google and Microsoft namely).  I assume you already have an OAuth2 access
  * token with you; this is not an OAuth2 client that will do HTTP stuff for you
- * (I wouldn't know how to write that in Java anyways...).
+ * (I wouldn't know how to write that in Java anyways...).  See:
+ *
+ * https://developers.google.com/workspace/gmail/imap/xoauth2-protocol#the_sasl_xoauth2_mechanism.
  *
  * This file is directly forked from PlainSaslSmtpAuthExample.java.  Its
  * comments are retained below, but just so you know if you've used that file,
@@ -17,7 +19,8 @@
  *    - Set USER to your email and unset ACCESS (= set to null).
  *      That way, Java will only prompt you for the access token.
  *    - Unset both.  Java will prompt for both.
- *    - Set both.  (NOT recommended unless you keep this file safe!)
+ *    - Set both.  (But aren't you gonna get tired of renewing the key
+ *      and copying it in after a while?)
  *
  * The command-line interface is enabled if at least one argument is passed to
  * this program.  In this case USER and ACCESS are ignored entirely.
@@ -87,7 +90,7 @@ public class XOAuth2SaslSmtpAuthExample {
 
     /**
      * Some initialization to ensure that we get the stuff
-     * we need to perform SASL PLAIN or die with an error.
+     * we need to perform SASL XOAUTH2 or die with an error.
      * @param username provided username
      * @param password proivded password
      * @throws IOException if JVM console is acting up
@@ -120,7 +123,7 @@ public class XOAuth2SaslSmtpAuthExample {
          * In C shell, you'd replace 'export' with 'setenv' and drop the '='
 	 * and use the older backtick capture:
          *
-         *     setenv OAUTH_USER 'emeng@cs.wisc.edu'
+         *     setenv OAUTH_USER 'meng69@wisc.edu'
          *     setenv OAUTH_ACCESS `./get_token.py`
          *     java XOAuth2SaslSmtpAuthExample
          */
@@ -153,6 +156,7 @@ public class XOAuth2SaslSmtpAuthExample {
     }
 
     public void run() {
+        /* "user=" {User} "^Aauth=Bearer " {Access Token} "^A^A" */
         String credentials = "user=" + myUser + "\u0001auth=Bearer " + myToke + "\u0001\u0001";
         byte[] binaryCredentials = credentials.getBytes(StandardCharsets.UTF_8);
         String base64Credentials = Base64.getEncoder().encodeToString(binaryCredentials);
