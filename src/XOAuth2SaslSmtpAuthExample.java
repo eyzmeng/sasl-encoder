@@ -136,7 +136,7 @@ static {
      */
     private static String usage() {
         final String className = XOAuth2SaslSmtpAuthExample.class.getName();
-        return String.format("Usage: java %s [user [access_token]]\n", className);
+        return String.format("Usage: java %s [user [access_token]]", className);
     }
 
     /**

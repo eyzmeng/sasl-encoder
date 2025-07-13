@@ -74,7 +74,7 @@ public class PlainSaslSmtpAuthExample {
      */
     private static String usage() {
         final String className = PlainSaslSmtpAuthExample.class.getName();
-        return String.format("Usage: java %s [username [password]]\n", className);
+        return String.format("Usage: java %s [username [password]]", className);
     }
 
     /**
