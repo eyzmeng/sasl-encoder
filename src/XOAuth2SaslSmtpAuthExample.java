@@ -33,14 +33,22 @@
  * you will have to make sure that values are always supplied some other way.
  */
 
+import java.io.BufferedReader;
 import java.io.Console;
 import java.io.EOFException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
+import java.util.Scanner;
 
 /**
- * @version 1.1
+ * @version 1.2
  */
 public class XOAuth2SaslSmtpAuthExample {
 
@@ -64,6 +72,45 @@ public class XOAuth2SaslSmtpAuthExample {
      * placeholder this time: BYOT (bring your own token)!
      */
     private static final String ACCESS = null;
+
+    /**
+     * Files to read access token from.  Files will
+     * be tried in the order they are listed in.
+     * Used as a fallback when {@link #ACCESS} is unspecified,
+     * though before user input is attempted.
+     * <p>
+     * Note that any file provided in this list can and will
+     * override your ability to interactively enter the token,
+     * if present.  Files that do exist, but are otherwise empty,
+     * unreadable, have the wrong file type, or contain malformed
+     * UTF-8 sequences cause the program to be terminate rather
+     * than being silently skipped.  Only files that do not exist
+     * are deemed acceptable and will be silently skipped.
+     * <p>
+     * There is no way to override these paths at runtime, so
+     * choose wisely, or expect to re-compile a lot.
+     *
+     * @since 1.2
+     */
+    private static List<Path> ACCESS_TOKEN = new ArrayList<>();
+
+static {
+    /* The following might be useful (if you place the
+     * OAuth client inside this one somehow...) */
+    ACCESS_TOKEN.add(
+        getPath("imap_smtp_access_token")
+        );
+
+    ACCESS_TOKEN.add(
+        getPath("oauth/wisc/imap_smtp_access_token")
+        );
+
+    /* my setup :) */
+    //ACCESS_TOKEN.add(
+    //    getPath(System.getProperty("user.home"))
+    //        .resolve("my/config/oauth/tokens/for/wisc.edu/tb_access_token")
+    //    );
+};
 
     private final String myUser;
     private final String myToke;
@@ -103,6 +150,15 @@ public class XOAuth2SaslSmtpAuthExample {
             throw new IOException("JVM is not attached to a terminal device.");
         }
         return tty;
+    }
+
+    /**
+     * Basically Path.of() but I want to maintain compatibility with Java 8.
+     * @param path a file path
+     * @return a representation of that path in the current (default) file system?
+     */
+    private static Path getPath(String path) {
+        return FileSystems.getDefault().getPath(path);
     }
 
     /**
@@ -151,6 +207,34 @@ public class XOAuth2SaslSmtpAuthExample {
             access = System.getenv("OAUTH_ACCESS");
         }
 
+        if (access == null) {
+            for (Path filePath : ACCESS_TOKEN) {
+                BufferedReader file;
+                try {
+                    file = Files.newBufferedReader(filePath, StandardCharsets.UTF_8);
+                } catch (NoSuchFileException e) {
+                    continue;
+                } catch (IOException e) {
+                    throw new IllegalArgumentException("Open error: " + filePath, e);
+                }
+
+                try {
+                    access = file.readLine();
+                } catch (IOException e) { 
+                    throw new IllegalArgumentException("Read error: " + filePath, e);
+                } finally {
+                    file.close();
+                }
+
+                if (access == null) {
+                    throw new IllegalArgumentException("File empty: " + filePath);
+                }
+
+                System.err.println("Using " + filePath + " as access token.");
+            }
+        }
+
+        /* Last resort */
         if (user != null) {
             myUser = user;
         } else {
